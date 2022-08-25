@@ -24,10 +24,21 @@
     <div id="map"></div>
 
     <script type="text/javascript">
+        async function list_directory(user, repo, directory) {
+          const url = `https://api.github.com/repos/${user}/${repo}/git/trees/main`;
+          const list = await fetch(url).then(res => res.json());
+          const dir = list.tree.find(node => node.path === directory);
+          if (dir) {
+             const list = await fetch(dir.url).then(res => res.json());
+             return list.tree.map(node => node.path);
+          }
+        }
+
         var osm = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; 2013 OpenStreetMap contributors',
         });
-
+        var files = list_directory('LePetitTim', 'LePetitTim.github.io', 'map_files');
+        console.log(files);
         var map = L.map('map', {
                 drawControl: false
             })
