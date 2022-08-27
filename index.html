@@ -39,7 +39,15 @@
         });
         var files = list_directory('LePetitTim', 'LePetitTim.github.io', 'map_files');
         for (var file in files){
-            var gpx_file = 'https://raw.githubusercontent.com/LePetitTim/LePetitTim.github.io/master/map_files/' + 'file';
+            var gpx_file = 'https://raw.githubusercontent.com/LePetitTim/LePetitTim.github.io/main/map_files/' + 'file';
+            $.ajax({
+            url: gpx_file,
+            dataType: 'jsonp',
+            success: function(results)
+            {
+                var content = results.data.content;
+            });
+            console.log(content);
         }
         var txtFile = new XMLHttpRequest();
         txtFile.open("GET", gpx_file, true);
