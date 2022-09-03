@@ -24,6 +24,9 @@
     <div id="map"></div>
 
     <script type="text/javascript">
+        var map = L.map('map', {
+                drawControl: false
+            }).addLayer(osm);
         async function list_directory(user, repo, directory) {
           const url = `https://api.github.com/repos/${user}/${repo}/git/trees/main`;
           const list = await fetch(url).then(res => res.json());
@@ -40,25 +43,16 @@
         var files = list_directory('LePetitTim', 'LePetitTim.github.io', 'map_files');
         for (var file in files){
             var gpx_file = 'https://raw.githubusercontent.com/LePetitTim/LePetitTim.github.io/main/map_files/' + 'file';
-            $.ajax({
-            url: gpx_file,
-            dataType: 'jsonp',
-            success: function(results){
-                   var content = results.data.content;
-                }
-            });
-            console.log(content);
+            new L.GPX(gpx_file, {async: true}).on('loaded', function(e) {
+  map.fitBounds(e.target.getBounds());
+}).addTo(map);
         }
         var txtFile = new XMLHttpRequest();
         txtFile.open("GET", gpx_file, true);
         allText = txtFile.responseText;
         console.log(allText);
         console.log(files);
-        var map = L.map('map', {
-                drawControl: false
-            })
-            .setView([48.49, 1.4], 10)
-            .addLayer(osm);
+     
 
         var guides = L.polyline([
             [48.505431207150885, 1.3999843597412107],
